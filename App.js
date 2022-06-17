@@ -1,20 +1,48 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import "react-native-gesture-handler";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import DrawerNavigation from "./navigation/DrawerNavigation";
+import { NavigationConstants } from "./constants/NavigationNames";
+
+import AddBuildingScreen from "./screens/AddBuildingScreen";
+import BuildingDetailsScreen from "./screens/BuildingDetailsScreen";
+import ScanForBeaconsScreen from "./screens/ScanForBeaconsScreen";
 
 export default function App() {
+  const Stack = createStackNavigator();
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: "#6A539D",
+            borderBottomWidth: 0,
+          },
+          headerTintColor: "#FFFFFF",
+        }}
+      >
+        <Stack.Screen
+          name={NavigationConstants.HOME}
+          component={DrawerNavigation}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="AddBuilding"
+          options={{
+            headerTintColor: "#FFFFFF",
+            title: "Add new building",
+          }}
+          component={AddBuildingScreen}
+        />
+        <Stack.Screen
+          name="BuildingDetails"
+          component={BuildingDetailsScreen}
+          options={({ route }) => ({
+            title: route.params.buildingName,
+          })}
+        />
+        <Stack.Screen name="ScanForBeacons" component={ScanForBeaconsScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
