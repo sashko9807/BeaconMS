@@ -5,7 +5,7 @@ import BeaconsPerFloor from "../container/BeaconsPerFloor";
 import MainLayout from "../container/MainLayout";
 import BeaconList from "../components/BeaconList";
 
-const BuildingDetailsScreen = () => {
+const BuildingDetailsScreen = ({ navigation }) => {
   const beaconsPerFloor = () => {
     const beaconsData = Beacons();
 
