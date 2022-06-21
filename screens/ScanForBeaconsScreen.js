@@ -10,9 +10,12 @@ import { useEffect, useState } from "react";
 import { DeviceEventEmitter } from "react-native";
 import Beacons from "react-native-beacons-manager";
 
+import { useIsFocused } from "@react-navigation/native";
+
 import BluetoothStateManager from "react-native-bluetooth-state-manager";
 
 import LocationEnabler from "react-native-location-enabler";
+
 import IBeaconCard from "../components/iBeaconCard";
 import ScanButton from "../components/ScanButton";
 
@@ -20,10 +23,12 @@ import MainLayout from "../container/MainLayout";
 
 //import getLocationPermission from "../api/getLocationPermission";
 
-const BeaconsInRangeScreen = () => {
+const BeaconsInRangeScreen = ({ navigation }) => {
   const [bluetoothEnabled, setBluetothEnabled] = useState(false);
   const [beaconsInRange, setBeaconsInRange] = useState([]);
   const [isScanning, setIsScanning] = useState(false);
+
+  const isFocused = useIsFocused();
 
   const {
     PRIORITIES: { HIGH_ACCURACY },
@@ -90,9 +95,9 @@ const BeaconsInRangeScreen = () => {
 
     // Print a log of the detected iBeacons (1 per second)
     DeviceEventEmitter.addListener("beaconsDidRange", (data) => {
-      console.log(data.beacons.beacon_type);
       data.beacons.forEach((elem) => {
-        if (elem.beacon_type) {
+        if (elem.beacon_type !== null) {
+          console.log(elem.beacon_type);
           setBeaconsInRange(data.beacons);
         }
       });
@@ -106,6 +111,13 @@ const BeaconsInRangeScreen = () => {
     }
     scanForBeacons();
   }, [isScanning]);
+
+  useEffect(() => {
+    if (!isFocused) {
+      DeviceEventEmitter.removeAllListeners("beaconsDidRange");
+    }
+    setIsScanning(false);
+  }, [isFocused]);
 
   useEffect(() => {
     console.log(beaconsInRange);
@@ -137,6 +149,14 @@ const BeaconsInRangeScreen = () => {
               key={`${currBeacon.uuid}-${currBeacon.major}-${currBeacon.minor}`}
             >
               <IBeaconCard
+                onPress={() => {
+                  navigation.navigate("AddBeaconScreen", {
+                    beacon_type: currBeacon.beacon_type,
+                    uuid: currBeacon.uuid,
+                    major: currBeacon.major,
+                    minor: currBeacon.minor,
+                  });
+                }}
                 beacon_type={currBeacon.beacon_type}
                 distance={currBeacon.distance.toFixed(2)}
                 uuid={currBeacon.uuid}

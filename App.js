@@ -7,6 +7,7 @@ import { NavigationConstants } from "./constants/NavigationNames";
 import AddBuildingScreen from "./screens/AddBuildingScreen";
 import BuildingDetailsScreen from "./screens/BuildingDetailsScreen";
 import ScanForBeaconsScreen from "./screens/ScanForBeaconsScreen";
+import AddBeaconScreen from "./screens/AddBeaconScreen";
 
 export default function App() {
   const Stack = createStackNavigator();
@@ -42,6 +43,7 @@ export default function App() {
           })}
         />
         <Stack.Screen name="ScanForBeacons" component={ScanForBeaconsScreen} />
+        <Stack.Screen name="AddBeaconScreen" component={AddBeaconScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

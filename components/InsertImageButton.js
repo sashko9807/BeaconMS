@@ -1,6 +1,10 @@
 import { View, Text, Pressable } from "react-native";
 
-const InsertImageButton = ({ onPress, image = undefined }) => {
+const InsertImageButton = ({
+  onPress,
+  image = undefined,
+  isBeacon = false,
+}) => {
   return (
     <View>
       <View style={imgButtonStyle.imgButton}>
@@ -8,13 +12,19 @@ const InsertImageButton = ({ onPress, image = undefined }) => {
           <Text style={imgButtonStyle.buttonText}>Choose file</Text>
         </Pressable>
       </View>
-      {image ? (
-        <Text style={imgButtonStyle.imageName}>
-          Selected Image:{"\n" + image}
-        </Text>
-      ) : (
-        <Text>Select an image to be associated with the building</Text>
-      )}
+      <View style={{ marginLeft: 20 }}>
+        {image ? (
+          <Text style={imgButtonStyle.imageName}>
+            Selected Image:{"\n" + image}
+          </Text>
+        ) : !isBeacon ? (
+          <Text>Select an image to be associated with the building</Text>
+        ) : (
+          <Text>
+            Select an image which will be transmitted through the beacon
+          </Text>
+        )}
+      </View>
     </View>
   );
 };
@@ -53,7 +63,7 @@ const imgButtonStyle = {
     color: "#6A539D",
     width: 500,
     flexGrow: 0,
-    marginLeft: 20,
+    marginLeft: 10,
     fontSize: 16,
     fontWeight: "bold",
   },
