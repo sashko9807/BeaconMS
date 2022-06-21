@@ -66,21 +66,33 @@ const BuildingDetailsScreen = ({ navigation }) => {
 
   const renderItem = ({ item }) => {
     return (
-      <BeaconsPerFloor floorNumber={item.floor}>
+      <View>
         {item.beacons.length === 0 ? (
-          <View>
-            <Text>No beacons have been added to this floor</Text>
-          </View>
+          <BeaconsPerFloor floorNumber={item.floor} isEmpty={true}>
+            <View style={{ marginTop: 10 }}>
+              <Text
+                style={{
+                  textAlign: "center",
+                  fontSize: 17,
+                  fontStyle: "italic",
+                }}
+              >
+                No beacons have been added to this floor
+              </Text>
+            </View>
+          </BeaconsPerFloor>
         ) : (
-          item.beacons.map((currBeacon) => {
-            return (
-              <View key={currBeacon.UUID}>
-                <BeaconList name={currBeacon.name} />
-              </View>
-            );
-          })
+          <BeaconsPerFloor floorNumber={item.floor}>
+            {item.beacons.map((currBeacon) => {
+              return (
+                <View key={currBeacon.UUID} style={{ marginTop: 10 }}>
+                  <BeaconList name={currBeacon.name} />
+                </View>
+              );
+            })}
+          </BeaconsPerFloor>
         )}
-      </BeaconsPerFloor>
+      </View>
     );
   };
 

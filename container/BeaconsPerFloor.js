@@ -1,8 +1,8 @@
 import { View, Text, Pressable, StyleSheet } from "react-native";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-const BeaconsPerFloor = ({ floorNumber, children }) => {
-  const [showBeacons, setShowBeacons] = useState(true);
+const BeaconsPerFloor = ({ floorNumber, children, isEmpty = false }) => {
+  const [showBeacons, setShowBeacons] = useState(!isEmpty);
 
   return (
     <View>
