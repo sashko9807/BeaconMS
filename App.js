@@ -8,18 +8,22 @@ import AddBuildingScreen from "./screens/AddBuildingScreen";
 import BuildingDetailsScreen from "./screens/BuildingDetailsScreen";
 import ScanForBeaconsScreen from "./screens/ScanForBeaconsScreen";
 import AddBeaconScreen from "./screens/AddBeaconScreen";
+import WelcomeScreen from "./screens/WelcomeScreen";
+import RegisterModal from "./screens/RegisterModal";
+import ForgottenPasswordModal from "./screens/ForgottenPasswordModal";
 
 export default function App() {
   const Stack = createStackNavigator();
   return (
     <NavigationContainer>
       <Stack.Navigator
+        initialRouteName={"WelcomeScreen"}
         screenOptions={{
           headerStyle: {
             backgroundColor: "#6A539D",
-            borderBottomWidth: 0,
           },
-          headerTintColor: "#FFFFFF",
+          headerShadowVisible: false,
+          headerTintColor: "#FFF",
         }}
       >
         <Stack.Screen
@@ -44,6 +48,28 @@ export default function App() {
         />
         <Stack.Screen name="ScanForBeacons" component={ScanForBeaconsScreen} />
         <Stack.Screen name="AddBeaconScreen" component={AddBeaconScreen} />
+        <Stack.Screen
+          name="WelcomeScreen"
+          options={{ headerShown: false }}
+          component={WelcomeScreen}
+        />
+        <Stack.Group
+          screenOptions={{
+            presentation: "transparentModal",
+            transparentCard: true,
+          }}
+        >
+          <Stack.Screen
+            name="RegisterModal"
+            options={{ headerShown: false }}
+            component={RegisterModal}
+          />
+          <Stack.Screen
+            name="ForgottenPasswordModal"
+            component={ForgottenPasswordModal}
+            options={{ headerShown: false }}
+          />
+        </Stack.Group>
       </Stack.Navigator>
     </NavigationContainer>
   );

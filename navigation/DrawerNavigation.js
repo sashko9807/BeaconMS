@@ -13,6 +13,7 @@ const DrawerNavigation = () => {
           borderBottomWidth: 0,
         },
         headerTintColor: "#FFFFFF",
+        headerShadowVisible: false,
       }}
     >
       <Drawer.Screen name="Dashboard" component={DashboardScreen} />
