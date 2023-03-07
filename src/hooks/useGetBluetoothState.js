@@ -3,33 +3,30 @@ import BluetoothStateManager from 'react-native-bluetooth-state-manager';
 
 export const useGetBluetoothState = () => {
   const [bluetoothEnabled, setBluetothEnabled] = useState(false);
-  const [bluetoothState, setBluetoothState] = useState('');
 
   useEffect(() => {
-    const state = BluetoothStateManager.onStateChange((currentState) => {
-      setBluetoothState(currentState);
-    }, []);
-
-    return () => {
-      if (state) {
-        state.remove();
+    BluetoothStateManager.getState().then((bluetoothState) => {
+      switch (bluetoothState) {
+        case 'PoweredOn':
+          setBluetothEnabled(true)
+          break;
+        default:
+          break;
       }
-    };
+    });
   }, []);
 
-  useEffect(() => {
-    checkBluetooth();
-  }, [bluetoothState]);
 
-  const checkBluetooth = async () => {
-    if (bluetoothState === 'PoweredOn') return setBluetothEnabled(true);
-    if (bluetoothState === 'PoweredOff') {
-      const request = await BluetoothStateManager.requestToEnable().catch(() =>
-        BluetoothStateManager.onStateChange().remove()
-      );
-      if (request) return setBluetothEnabled(true);
-    }
+  const isBluetoothEnabled = () => {
+    return bluetoothEnabled
+  }
+
+  const requestToEnable = () => {
+    BluetoothStateManager.requestToEnable()
+      .then(response => setBluetothEnabled(response))
+      .catch(() => setBluetothEnabled(false))
+    return bluetoothEnabled
   };
 
-  return bluetoothEnabled;
+  return [isBluetoothEnabled, requestToEnable];
 };

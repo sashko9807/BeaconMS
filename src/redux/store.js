@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit/';
-import { userQueries } from './userQueries';
+import { userQueries } from '../api/userQueries';
 import authReducer from './authSlice';
 import buildingReducer from './buildingSlice';
 

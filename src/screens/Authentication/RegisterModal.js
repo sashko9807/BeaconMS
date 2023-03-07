@@ -1,10 +1,8 @@
-import { StyleSheet, Text, View, Pressable } from 'react-native';
-import { useEffect, useState } from 'react';
+import { StyleSheet, Text, View, } from 'react-native';
+import { useState } from 'react';
 
-import GenericButton from '../../components/GenericButton';
-import UserInput from '../../components/UserInput';
-
-import GoBack from '../../assets/GoBack.svg';
+import { InlineButton, OutlineButton } from '../../components/Buttons';
+import ControlledUserInput from '../../components/ControlledUserInput';
 
 import ActivityIndicatorComponent from '../../components/ActivityIndicatorComponent';
 import ApiResultModal from '../../components/ApiResultModal';
@@ -12,7 +10,8 @@ import ApiResultModal from '../../components/ApiResultModal';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useForm } from 'react-hook-form';
 
-import { useRegisterMutation } from '../../redux/userQueries';
+import { useRegisterMutation } from '../../api/userQueries';
+import globalStyles from '../../globals/styles'
 
 const EMAIL_REGEXP =
   /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
@@ -34,7 +33,7 @@ const RegisterModal = ({ navigation }) => {
   const [regUser, { isLoading, isSuccess, isError }] = useRegisterMutation();
 
   const registerUser = async () => {
-    console.log(errors);
+    console.log(`reached`);
     try {
       const newUser = await regUser({
         email: email.toLowerCase(),
@@ -51,155 +50,150 @@ const RegisterModal = ({ navigation }) => {
   };
 
   return (
-    <View style={{ flex: 1 }}>
-      <View style={styles.containerModal}>
-        <View style={styles.innerContainer}>
-          {isLoading && (
-            <ApiResultModal
-              isVisible={true}
-              title={''}
-              message={
-                <ActivityIndicatorComponent text="Registering new User" />
-              }
-            />
-          )}
-          {(isSuccess || isError) && (
-            <ApiResultModal
-              isVisible={showApiResultModal}
-              title={apiStatus}
-              message={apiMessage}
-              onConfirm={() => {
-                setShowApiResultModal(!showApiResultModal);
+    <>
+      {isLoading && (
+        <ApiResultModal
+          isVisible={true}
+          title={''}
+          message={
+            <ActivityIndicatorComponent text="Registering new User" />
+          }
+        />
+      )}
+      {(isSuccess || isError) && (
+        <ApiResultModal
+          isVisible={showApiResultModal}
+          title={apiStatus}
+          message={apiMessage}
+          onConfirm={() => {
+            setShowApiResultModal(!showApiResultModal);
+          }}
+        />
+      )}
+      <View style={mainStyle.container}>
+        <View style={mainStyle.header}>
+          <Text style={mainStyle.headerText}>Register</Text>
+        </View>
+        <View style={mainStyle.authContainer}>
+          <View style={mainStyle.authFields}>
+            <ControlledUserInput
+              title={'Email'}
+              name={'email'}
+              control={control}
+              placeholder={'Email'}
+              rules={{
+                required: 'Email field is required',
+                pattern: { value: EMAIL_REGEXP, message: 'Invalid email' },
               }}
             />
-          )}
-          <KeyboardAwareScrollView
-            enableOnAndroid={true}
-            enableResetScrollToCoords={true}
-            scrollEnabled={true}
-            resetScrollToCoords={{ x: 0, y: 0 }}
-            extraScrollHeight={20}
-            contentContainerStyle={{
-              flexGrow: 1,
-              borderTopRightRadius: 25,
-            }}
-            keyboardShouldPersistTaps="handled"
-          >
-            <View
-              style={{
-                marginLeft: 10,
-                flex: 1,
-                flexDirection: 'row',
-              }}
-            >
-              <Pressable onPress={() => navigation.goBack()}>
-                <View style={{ flex: 1, flexDirection: 'row' }}>
-                  <GoBack width="30" height="30" />
-                  <Text style={{ fontSize: 20, marginLeft: 5 }}>Sign up</Text>
-                </View>
-              </Pressable>
+            <View style={mainStyle.spacing}>
+              <ControlledUserInput
+                title={'Password'}
+                name={'password'}
+                control={control}
+                placeholder={'Password'}
+                rules={{
+                  required: 'Password is required',
+                  minLength: {
+                    value: 6,
+                    message: 'Password must be at least 6 characters long',
+                  },
+                }}
+              />
             </View>
-            <View
-              style={{
-                marginTop: 10,
-                marginRight: 10,
-                marginLeft: 15,
-                flexGrow: 1,
-                backgroundColor: '#FFF',
-                borderTopRightRadius: 25,
-                borderTopLeftRadius: 25,
-                justifyContent: 'center',
-                width: '90%',
-              }}
-            >
-              <View>
-                <UserInput
-                  title={'Email'}
-                  name={'email'}
-                  control={control}
-                  placeholder={'Email'}
-                  rules={{
-                    required: 'Email field is required',
-                    pattern: { value: EMAIL_REGEXP, message: 'Invalid email' },
-                  }}
-                />
-              </View>
-              <View
-                style={{
-                  marginTop: 40,
+            <View style={mainStyle.spacing}>
+              <ControlledUserInput
+                title={'Confirm Password'}
+                name={'confirmPassword'}
+                control={control}
+                placeholder={'Confirm Password'}
+                rules={{
+                  required: 'Confirm Password field is required',
+                  validate: (value) =>
+                    value === pwd || "Passwords don't match",
                 }}
-              >
-                <UserInput
-                  title={'Password'}
-                  name={'password'}
-                  control={control}
-                  placeholder={'Password'}
-                  rules={{
-                    required: 'Password is required',
-                    minLength: {
-                      value: 6,
-                      message: 'Password must be at least 6 characters long',
-                    },
-                  }}
-                />
-              </View>
-              <View
-                style={{
-                  marginTop: 40,
-                  borderTopRightRadius: 25,
-                  borderTopLeftRadius: 25,
-                }}
-              >
-                <UserInput
-                  title={'Confirm Password'}
-                  name={'confirmPassword'}
-                  control={control}
-                  placeholder={'Confirm Password'}
-                  rules={{
-                    required: 'Confirm Password field is required',
-                    validate: (value) =>
-                      value === pwd || "Passwords don't match",
-                  }}
-                />
-              </View>
-              <View
-                style={{
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginTop: 60,
-                  marginBottom: 20,
-                }}
-              >
-                <GenericButton
-                  onPress={handleSubmit(registerUser)}
-                  name="Sign up"
-                  borderStyle={'inline'}
-                />
-              </View>
+              />
             </View>
-          </KeyboardAwareScrollView>
+          </View>
+          <View style={mainStyle.btnContainer}>
+            <View style={mainStyle.buttons}>
+              <InlineButton title="Register" onPress={handleSubmit(registerUser)} borderRadius={10} />
+              <OutlineButton
+                onPress={() => navigation.goBack()}
+                title="Sign in"
+                borderRadius={10}
+              />
+            </View>
+          </View>
         </View>
       </View>
-    </View>
+    </>
   );
 };
 
-export default RegisterModal;
+const mainStyle = StyleSheet.create({
+  container: {
+    backgroundColor: globalStyles.colorSet.PRIMARY,
+    flex: 1
+  },
+  header: {
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+  },
+  headerText: {
+    fontSize: globalStyles.fontSizeSet.fontLarge,
+    color: globalStyles.colorSet.SECONDARY,
+    fontFamily: globalStyles.fontFamilySet.fontFamilySecondary,
+  },
+  authContainer: {
+    flexGrow: 4,
+    borderTopRightRadius: 25,
+    borderTopLeftRadius: 25,
+    backgroundColor: globalStyles.colorSet.SECONDARY,
+    //borderWidth: 2,
+    // borderColor: 'red',
+  },
+  authFields: {
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    justifyContent: 'flex-start',
+    flexGrow: 0.7
+  },
+  authTitle: {
+    color: globalStyles.colorSet.PRIMARY,
+    fontSize: globalStyles.fontSizeSet.fontMedium,
+    fontFamily: globalStyles.fontFamilySet.fontFamilyPrimary,
+    fontWeight: 'bold',
+  },
+  authInput: {
+    flexDirection: 'row',
+    borderBottomColor: globalStyles.colorSet.PRIMARY,
+    borderBottomWidth: 0.5,
+    marginTop: 5,
+    alignItems: 'center',
+    flexGrow: 0.32
+  },
+  btnForgottenPassword: {
+    marginTop: 5,
+    fontSize: globalStyles.fontSizeSet.fontRegular,
+    fontFamily: globalStyles.fontFamilySet.fontFamilyPrimary,
+    color: globalStyles.colorSet.PRIMARY,
+    fontWeight: 'bold',
+  },
+  btnContainer: {
+    borderColor: 'red',
+    justifyContent: 'flex-end',
+    flexGrow: 2,
+  },
+  buttons: {
+    flexGrow: 0.2,
+    justifyContent: 'space-evenly',
+    alignItems: 'center'
+  },
+  spacing: {
+    marginTop: 40
+  }
 
-const styles = StyleSheet.create({
-  containerModal: {
-    flexGrow: 1,
-    borderTopLeftRadius: 25,
-    borderTopRightRadius: 25,
-  },
-  innerContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    top: 185,
-    borderTopLeftRadius: 25,
-    borderTopRightRadius: 25,
-    backgroundColor: '#FFF',
-  },
 });
+
+export default RegisterModal

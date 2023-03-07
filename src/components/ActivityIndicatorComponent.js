@@ -1,19 +1,20 @@
-import { View, Text, ActivityIndicator } from 'react-native';
+import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
 import React from 'react';
 
-const ActivityIndicatorComponent = ({ text = '' }) => {
+const ActivityIndicatorComponent = ({ text = '', size = "small", color = "#0000ff" }) => {
   return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
-      <ActivityIndicator size="small" color="#0000ff" />
+    <View style={styles.container} >
+      <ActivityIndicator size={size} color={color} />
       <Text>{text}</Text>
     </View>
   );
 };
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  }
+})
 export default ActivityIndicatorComponent;

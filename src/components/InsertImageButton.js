@@ -1,71 +1,108 @@
-import { View, Text, Pressable } from 'react-native';
+import { View, Text, Pressable, TextInput } from 'react-native';
+import globalStyles from '../globals/styles'
+import { Controller } from 'react-hook-form';
+import { moderateScale } from '../utils/scaling';
 
 const InsertImageButton = ({
   onPress,
-  image = undefined,
-  isBeacon = false,
+  name,
+  control = {},
+  rules = {},
+  image,
+  description = ''
 }) => {
   return (
     <View>
-      <View style={imgButtonStyle.imgButton}>
-        <Pressable onPress={onPress} style={imgButtonStyle.button}>
-          <Text style={imgButtonStyle.buttonText}>Choose file</Text>
-        </Pressable>
-      </View>
-      <View style={{ marginLeft: 20 }}>
-        {image ? (
-          <Text style={imgButtonStyle.imageName}>
-            Selected Image:{'\n' + image}
-          </Text>
-        ) : !isBeacon ? (
-          <Text>Select an image to be associated with the building</Text>
-        ) : (
-          <Text>
-            Select an image which will be transmitted through the beacon
-          </Text>
+      <Controller
+        control={control}
+        name={name}
+        rules={rules}
+        render={({
+          field: { value, onChange, onBlur },
+          fieldState: { error, },
+        }) => (
+          <>
+            {console.log(value)}
+            <View style={styles.imgButtonContainer}>
+              <Pressable onPress={onPress} style={[styles.button, error && { borderColor: globalStyles.colorSet.red }]}>
+                <Text style={[styles.buttonText, error && { color: globalStyles.colorSet.red }]}>Choose file</Text>
+              </Pressable>
+            </View>
+            <View style={{ marginLeft: 20 }}>
+              {error &&
+                <Text style={styles.TextColorErr}>{error.message}</Text>
+              }
+              {value ? (
+                <>
+                  <Text style={styles.imageName}>
+                    Selected Image
+                  </Text>
+                  <TextInput
+                    value={value}
+                    style={styles.imageName}
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    editable={false}
+                  />
+                </>
+
+              ) : <Text style={styles.buttonDescription}>{description}</Text>
+              }
+            </View>
+          </>
+
+
+
         )}
-      </View>
+      />
     </View>
   );
 };
 
-const imgButtonStyle = {
-  imgButton: {
-    flex: 1,
+const styles = {
+  imgButtonContainer: {
     marginLeft: 20,
     marginTop: 5,
-    minHeight: 80,
+
   },
 
   button: {
-    flex: 1,
+    maxWidth: moderateScale(200),
+    minHeight: moderateScale(90),
+    maxHeight: moderateScale(90),
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
     borderBottomLeftRadius: 25,
     borderBottomRightRadius: 25,
-    backgroundColor: '#FFF',
-    borderColor: '#6A539D',
-    color: '#6A539D',
+    backgroundColor: globalStyles.colorSet.SECONDARY,
+    borderColor: globalStyles.colorSet.PRIMARY,
+    color: globalStyles.colorSet.PRIMARY,
     borderWidth: 2,
     alignItems: 'center',
     justifyContent: 'center',
-    flexGrow: 1,
-    maxWidth: '40%',
   },
   buttonText: {
-    fontSize: 16,
+    fontSize: globalStyles.fontSizeSet.fontRegular,
     fontWeight: 'bold',
-    color: '#6A539D',
+    color: globalStyles.colorSet.PRIMARY,
     textAlign: 'center',
     textAlignVertical: 'center',
   },
   imageName: {
-    color: '#6A539D',
-    width: 500,
-    flexGrow: 0,
-    marginLeft: 10,
-    fontSize: 16,
+    color: globalStyles.colorSet.PRIMARY,
+    fontSize: globalStyles.fontSizeSet.fontRegular,
     fontWeight: 'bold',
+  },
+  buttonDescription: {
+    color: globalStyles.colorSet.gray,
+    fontSize: globalStyles.fontSizeSet.fontSmall,
+    fontFamily: globalStyles.fontFamilySet.fontFamilyPrimary
+  },
+  TextColorErr: {
+    color: globalStyles.colorSet.red,
+    fontSize: globalStyles.fontSizeSet.fontSmall,
+    fontFamily: globalStyles.fontFamilySet.fontFamilyPrimary,
+    alignSelf: 'stretch'
   },
 };
 export default InsertImageButton;

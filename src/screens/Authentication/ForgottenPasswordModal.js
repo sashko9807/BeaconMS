@@ -1,25 +1,24 @@
-import { StyleSheet, Text, View, Pressable, ScrollView } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
-import { useState } from 'react';
-
-import GoBack from '../../assets/GoBack.svg';
 
 import ActivityIndicatorComponent from '../../components/ActivityIndicatorComponent';
 import ApiResultModal from '../../components/ApiResultModal';
-import GenericButton from '../../components/GenericButton';
-import UserInput from '../../components/UserInput';
+import { InlineButton } from '../../components/Buttons';
+import ControlledUserInput from '../../components/ControlledUserInput';
 
 import { useForm } from 'react-hook-form';
-import { useForgotPasswordMutation } from '../../redux/userQueries';
+import { useForgotPasswordMutation } from '../../api/userQueries';
+
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import globalStyles from '../../globals/styles'
+import { useApiResultReducer, ACTIONS } from '../../hooks/useApiResultReducer';
 
 const EMAIL_REGEXP =
   /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 
 const ForgottenPasswordModal = ({ navigation }) => {
-  const [showApiResultModal, setShowApiResultModal] = useState(false);
-  const [apiStatus, setApiStatus] = useState('');
-  const [apiMessage, setApiMessage] = useState('');
 
+  const [store, dispatch] = useApiResultReducer()
   const [forgotPassword, { isLoading, isError, isSuccess }] =
     useForgotPasswordMutation();
 
@@ -35,123 +34,106 @@ const ForgottenPasswordModal = ({ navigation }) => {
   const passwordSubmit = async () => {
     try {
       const user = await forgotPassword({ email }).unwrap();
-      setApiStatus(user.status);
-      setApiMessage(user.message);
-      setShowApiResultModal(true);
+      dispatch({ type: ACTIONS.SUCCESS, status: user.status, message: user.message })
     } catch (err) {
-      console.log(err);
-      setApiStatus(err.data.status);
-      setApiMessage(err.data.message);
-      setShowApiResultModal(true);
+      dispatch({ type: ACTIONS.ERROR, status: err.data.status, message: err.data.message })
     }
   };
 
   return (
-    <View style={{ flex: 1 }}>
-      <View style={styles.containerModal}>
-        <View style={styles.innerContainer}>
-          {isLoading && (
-            <ApiResultModal
-              isVisible={true}
-              title={''}
-              message={
-                <ActivityIndicatorComponent text="Attempting to send new password to email" />
-              }
-            />
-          )}
-          {(isSuccess || isError) && (
-            <ApiResultModal
-              isVisible={showApiResultModal}
-              title={apiStatus}
-              message={apiMessage}
-              onConfirm={() => {
-                setShowApiResultModal(!showApiResultModal);
+    <>
+      {isLoading && (
+        <ApiResultModal
+          isVisible={true}
+          title={''}
+          message={
+            <ActivityIndicatorComponent text="Sending new password" />
+          }
+        />
+      )}
+      <ApiResultModal
+        isVisible={store.showResultModal}
+        title={store.title}
+        message={store.message}
+        onConfirm={() => {
+          dispatch({ type: ACTIONS.HIDE_MODAL })
+        }}
+      />
+      <View style={mainStyle.container}>
+        <View style={mainStyle.header}>
+          <Text style={mainStyle.headerText}>Forgot password</Text>
+        </View>
+        <View style={mainStyle.authContainer}>
+          <View style={mainStyle.authFields}>
+            <ControlledUserInput
+              title={'Email'}
+              name={'email'}
+              control={control}
+              placeholder={'Email'}
+              rules={{
+                required: 'Email field is required',
+                pattern: { value: EMAIL_REGEXP, message: 'Invalid email' },
               }}
             />
-          )}
-          <ScrollView
-            contentContainerStyle={{
-              flexGrow: 0,
-              backgroundColor: 'transperent',
-            }}
-          >
-            <View
-              style={{
-                marginLeft: 10,
-                flex: 0.1,
-                flexDirection: 'row',
-              }}
-            >
-              <Pressable onPress={() => navigation.goBack()}>
-                <View style={{ flex: 1, flexDirection: 'row' }}>
-                  <GoBack width="30" height="30" />
-                  <Text style={{ fontSize: 20, marginLeft: 5 }}>
-                    Forgotten Password
-                  </Text>
-                </View>
-              </Pressable>
-            </View>
-            <View
-              style={{
-                flex: 1,
-                marginLeft: 20,
-                marginTop: 20,
-                flexGrow: 1,
-                backgroundColor: '#FFF',
-              }}
-            >
-              <UserInput
-                title={'Email'}
-                name={'email'}
-                control={control}
-                placeholder={'Email'}
-                rules={{
-                  required: 'Email field is required',
-                  pattern: { value: EMAIL_REGEXP, message: 'Invalid email' },
-                }}
-              />
-              <View
-                style={{
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginBottom: 80,
-                  marginTop: 60,
-                }}
-              >
-                <GenericButton
-                  onPress={handleSubmit(passwordSubmit)}
-                  name="Send"
-                  borderStyle={'inline'}
-                />
-              </View>
-            </View>
-          </ScrollView>
+          </View>
+          <View style={mainStyle.btnSend}>
+            <InlineButton
+              onPress={handleSubmit(passwordSubmit)}
+              title="Send"
+              borderRadius={10}
+            />
+          </View>
         </View>
       </View>
-    </View>
+    </>
   );
 };
 
-export default ForgottenPasswordModal;
-
-const styles = StyleSheet.create({
-  containerModal: {
-    flexGrow: 1,
+const mainStyle = StyleSheet.create({
+  container: {
+    backgroundColor: globalStyles.colorSet.PRIMARY,
+    flex: 1
   },
-  innerContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    top: 185,
-    borderTopLeftRadius: 25,
+  header: {
+    paddingVertical: 10,
+    paddingHorizontal: 10
+  },
+  headerText: {
+    fontSize: globalStyles.fontSizeSet.fontLarge,
+    color: globalStyles.colorSet.SECONDARY,
+    fontFamily: globalStyles.fontFamilySet.fontFamilySecondary,
+  },
+  authContainer: {
+    flex: 4,
     borderTopRightRadius: 25,
-    backgroundColor: '#FFF',
+    borderTopLeftRadius: 25,
+    backgroundColor: globalStyles.colorSet.SECONDARY,
+    flexGrow: 1
+    //borderWidth: 2,
+    // borderColor: 'red',
   },
-  textProp: {
-    color: '#6A539D',
-    fontSize: 24,
-    fontFamily: 'Roboto',
+  authFields: {
+    paddingVertical: 20,
+    paddingHorizontal: 10,
+    justifyContent: 'flex-start',
+  },
+  authTitle: {
+    color: globalStyles.colorSet.PRIMARY,
+    fontSize: globalStyles.fontSizeSet.fontMedium,
+    fontFamily: globalStyles.fontFamilySet.fontFamilyPrimary,
     fontWeight: 'bold',
   },
+  inputs: {
+    paddingLeft: 5,
+    fontSize: globalStyles.fontSizeSet.fontSmall,
+  },
+  btnSend: {
+    marginTop: 30,
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
 });
+
+export default ForgottenPasswordModal;
+
+

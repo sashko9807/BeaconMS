@@ -1,6 +1,6 @@
-import { authQuery } from './authBaseQuery';
+import { api } from './baseQuery';
 
-export const buildingQueries = authQuery.injectEndpoints({
+export const buildingQueries = api.injectEndpoints({
   endpoints: (builder) => ({
     getBuilding: builder.query({
       query: () => ({

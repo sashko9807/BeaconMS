@@ -9,26 +9,22 @@ export const useScanForBeacons = () => {
 
   const isFocused = useIsFocused();
 
-  const isScanning = () => {
+  const setIsScanning = () => {
     setScan(!scan);
   };
 
   useEffect(() => {
-    if (!scan) {
+    if (!isFocused || !scan) {
       DeviceEventEmitter.removeAllListeners('beaconsDidRange');
       return;
     }
-    scanForBeacons();
-  }, [scan]);
 
-  useEffect(() => {
-    if (!isFocused) {
-      DeviceEventEmitter.removeAllListeners('beaconsDidRange');
-      setScan(false);
-      return;
+    if (scan && beaconsInRange.length > 0) {
+      setBeaconsInRange([])
     }
-    setScan(true);
-  }, [isFocused]);
+
+    scanForBeacons();
+  }, [scan, isFocused]);
 
   const scanForBeacons = async () => {
     Beacons.detectIBeacons();
@@ -42,11 +38,10 @@ export const useScanForBeacons = () => {
 
     DeviceEventEmitter.addListener('beaconsDidRange', (data) => {
       data.beacons.forEach((elem) => {
-        console.log(data.beacons);
-        setBeaconsInRange(data.beacons);
+        setBeaconsInRange(elem);
       });
     });
   };
 
-  return [beaconsInRange, scan, { isScanning }];
+  return [beaconsInRange, scan, setIsScanning];
 };

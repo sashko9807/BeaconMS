@@ -1,19 +1,19 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { PermissionsAndroid } from 'react-native';
 
 export const useRequestLocationPermission = () => {
   const [isPermissionGranted, setIsPermissionGranted] = useState(false);
 
-  const getLocationPermission = async () => {
-    const isGranted = await PermissionsAndroid.check(
+  const isLocationPermissionGranted = () => {
+    PermissionsAndroid.check(
       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
-    );
+    ).then(response => setIsPermissionGranted(response));
 
-    if (isGranted) {
-      return setIsPermissionGranted(true);
-    }
+    return isPermissionGranted
+  }
 
-    const granted = await PermissionsAndroid.request(
+  const requestPermission = async () => {
+    const permission = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
       {
         title: 'Beacon scanning location permission',
@@ -27,14 +27,11 @@ export const useRequestLocationPermission = () => {
     ).catch((err) => {
       console.warn(err);
     });
-    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-      setIsPermissionGranted(true);
-    }
+    if (permission === PermissionsAndroid.RESULTS.GRANTED) setIsPermissionGranted(true)
+
+    return isPermissionGranted
   };
 
-  useEffect(() => {
-    getLocationPermission();
-  }, []);
 
-  return isPermissionGranted;
+  return [isLocationPermissionGranted, requestPermission];
 };

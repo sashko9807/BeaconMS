@@ -28,5 +28,4 @@ export default buildingSlice.reducer;
 export const { setBuildingData } = buildingSlice.actions;
 
 export const selectBuildingID = (state) => state.building.buildingID;
-export const selectBuildingName = (state) => state.building.buildingName;
 export const selectBuildingTotalFloors = (state) => state.building.totalFloors;

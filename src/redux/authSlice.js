@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { userQueries } from './userQueries';
+import { userQueries } from '../api/userQueries';
 import { REAUTHORIZE, LOGOUT } from './authActions';
 
 const authSlice = createSlice({

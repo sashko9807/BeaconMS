@@ -1,211 +1,189 @@
-import { StyleSheet, Text, View, TextInput, Pressable } from 'react-native';
-
-import { useState } from 'react';
-
+import { View, Text, StyleSheet, TextInput, Pressable } from 'react-native'
+import globalStyles from '../../globals/styles'
 import UserIcon from '../../assets/user.svg';
 import PasswordIcon from '../../assets/PasswordIcon.svg';
-
+import { useState } from 'react';
+import { InlineButton, OutlineButton } from '../../components/Buttons';
+import { REGISTER_MODAL, FORGOTTEN_PASSWORD_MODAL } from '../../globals/NavigationNames';
+import { useLoginMutation } from '../../api/userQueries';
+import ApiResultModal from '../../components/ApiResultModal'
 import ActivityIndicatorComponent from '../../components/ActivityIndicatorComponent';
-import ApiResultModal from '../../components/ApiResultModal';
-import GenericButton from '../../components/GenericButton';
-
-import { useLoginMutation } from '../../redux/userQueries';
-
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { useApiResultReducer } from '../../hooks/useApiResultReducer';
+import { moderateScale } from '../../utils/scaling';
 
 const WelcomeScreen = ({ navigation }) => {
-  const [email, setEmail] = useState('sashko506@gmail.com');
-  const [password, setPassword] = useState('py9ui');
-  const [login, { isLoading, isSuccess, isError }] = useLoginMutation();
+    const [email, setEmail] = useState('sashko506@gmail.com');
+    const [password, setPassword] = useState('kxzkzk');
 
-  const [showApiResultModal, setShowApiResultModal] = useState(false);
-  const [apiStatus, setApiStatus] = useState('');
-  const [apiMessage, setApiMessage] = useState('');
+    const [login, { isLoading, isSuccess, isError, error }] = useLoginMutation();
+    const [store, dispatch] = useApiResultReducer()
 
-  const handleSubmit = async () => {
-    try {
-      const userData = await login({
-        email: email.toLowerCase(),
-        password,
-      }).unwrap();
-    } catch (err) {
-      setApiStatus(err.data.status);
-      setApiMessage(err.data.message);
-      setShowApiResultModal(true);
-    }
-  };
+    const handleSubmit = async () => {
+        try {
+            const userData = await login({
+                email: email.toLowerCase(),
+                password,
+            }).unwrap();
+        } catch (err) {
+            dispatch({
+                type: ACTIONS.ERROR,
+                status: err?.data?.status ?? "Oops something went wrong",
+                message: err?.data?.message ?? "Request couldn't be fullfilled"
+            })
+        }
+    };
 
-  return (
-    <>
-      {isLoading && (
-        <ApiResultModal
-          isVisible={true}
-          message={<ActivityIndicatorComponent text="Logging in" />}
-        />
-      )}
-      {isError && (
-        <ApiResultModal
-          isVisible={showApiResultModal}
-          title={apiStatus}
-          message={apiMessage}
-          onConfirm={() => {
-            setShowApiResultModal(!showApiResultModal);
-          }}
-        />
-      )}
-      <KeyboardAwareScrollView
-        bounces={false}
-        showsVerticalScrollIndicator={false}
-        enableOnAndroid={true}
-        scrollEnabled={true}
-        extraScrollHeight={100}
-        keyboardShouldPersistTaps="handled"
-        scrollToOverflowEnabled={true}
-        enableAutomaticScroll={true}
-        contentContainerStyle={{
-          flexGrow: 1,
-        }}
-      >
-        <View style={mainStyle.wrapper}>
-          <View
-            style={{
-              flex: 2,
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexGrow: 1,
-              marginHorizontal: 10,
-            }}
-          >
-            <Text style={mainStyle.header}>Welcome!</Text>
-            <Text
-              style={{
-                color: '#FFF',
-                fontFamily: 'Abel',
-                fontSize: 32,
-                textAlign: 'center',
-                marginTop: 20,
-              }}
-            >
-              Please sign in to access your devices
-            </Text>
-          </View>
-          <View style={mainStyle.container}>
-            <View
-              style={{
-                flex: 1,
-                marginLeft: 20,
-                marginTop: 50,
-                flexGrow: 1,
-                backgroundColor: '#FFF',
-              }}
-            >
-              <View>
-                <Text style={mainStyle.textProp}>Email</Text>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    borderBottomColor: '#6A539D',
-                    borderBottomWidth: 0.5,
-                    marginTop: 5,
-                  }}
-                >
-                  <UserIcon />
-                  <TextInput
-                    style={{
-                      flexGrow: 1,
-                    }}
-                    placeholder="Your Email"
-                    value={email}
-                    onChangeText={setEmail}
-                  />
+    return (
+        <>
+            {isLoading && (
+                <ApiResultModal
+                    isVisible={true}
+                    message={<ActivityIndicatorComponent text={"Logging in"} />}
+                />
+            )}
+            <ApiResultModal
+                isVisible={store.showResultModal}
+                title={store.title}
+                message={store.message}
+                onConfirm={() => dispatch({ type: ACTIONS.HIDE_MODAL })}
+            />
+            <View style={styles.container}>
+                <View style={styles.header}>
+                    <Text style={[styles.headerText, { textAlign: 'center' }]}>Welcome!</Text>
+                    <Text
+                        style={[styles.headerText, {
+                            textAlign: 'center',
+                            marginTop: 20,
+
+                        }]}
+                    >
+                        Please sign in to access your devices
+                    </Text>
                 </View>
-              </View>
-              <View style={{ marginTop: 40 }}>
-                <Text style={mainStyle.textProp}>Password</Text>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    borderBottomColor: '#6A539D',
-                    borderBottomWidth: 0.5,
-                    marginTop: 5,
-                  }}
-                >
-                  <PasswordIcon />
-                  <TextInput
-                    style={{
-                      flexGrow: 1,
-                    }}
-                    value={password}
-                    onChangeText={setPassword}
-                    placeholder="Password"
-                  />
+                <View style={styles.authContainer}>
+                    <View style={styles.authFields}>
+                        <View style={styles.authEmail}>
+                            <Text adjustsFontSizeToFit style={styles.authTitle}>Email</Text>
+                            <View style={styles.authInput}>
+                                <UserIcon width={moderateScale(25)} height={moderateScale(25)} />
+                                <TextInput
+                                    adjustsFontSizeToFit
+                                    placeholder="Your Email"
+                                    value={email}
+                                    onChangeText={setEmail}
+                                    style={styles.inputs}
+                                />
+                            </View>
+                        </View>
+                        <View style={styles.authPassword}>
+                            <Text adjustsFontSizeToFit style={styles.authTitle}>Password</Text>
+                            <View style={styles.authInput}>
+                                <PasswordIcon width={moderateScale(25)} height={moderateScale(25)} />
+                                <TextInput
+                                    adjustsFontSizeToFit
+                                    value={password}
+                                    onChangeText={setPassword}
+                                    placeholder="Password"
+                                    style={styles.inputs}
+                                />
+                            </View>
+                            <Pressable style={{ alignSelf: 'flex-start' }}
+                                onPress={() => navigation.navigate(FORGOTTEN_PASSWORD_MODAL)}
+                            >
+                                <Text style={styles.btnForgottenPassword}>
+                                    Forgot password?
+                                </Text>
+                            </Pressable>
+                        </View>
+                    </View>
+                    <View style={styles.btnContainer}>
+                        <View style={styles.buttons}>
+                            <InlineButton title="Sign in" onPress={() => handleSubmit()} borderRadius={10} />
+                            <OutlineButton
+                                onPress={() => navigation.navigate(REGISTER_MODAL)}
+                                title="Sign up"
+                                borderRadius={10}
+                            />
+                        </View>
+                    </View>
                 </View>
-              </View>
-              <Pressable
-                onPress={() => navigation.navigate('ForgottenPasswordModal')}
-              >
-                <Text
-                  style={{
-                    marginTop: 5,
-                    fontSize: 20,
-                    fontFamily: 'Roboto',
-                    color: '#6A539D',
-                    fontWeight: 'bold',
-                  }}
-                >
-                  Forgot password?
-                </Text>
-              </Pressable>
             </View>
-            <View style={{ justifyContent: 'center' }}>
-              <GenericButton name="Sign in" onPress={() => handleSubmit()} />
-            </View>
-            <View
-              style={{
-                justifyContent: 'center',
-                marginTop: 20,
-                paddingBottom: 30,
-              }}
-            >
-              <GenericButton
-                onPress={() => navigation.navigate('RegisterModal')}
-                name="Sign up"
-                borderStyle={'inline'}
-              />
-            </View>
-          </View>
-        </View>
-      </KeyboardAwareScrollView>
-    </>
-  );
-};
+        </>
+    )
+}
 
-const mainStyle = StyleSheet.create({
-  wrapper: {
-    backgroundColor: '#6A539D',
-    flex: 1,
-    minHeight: '100%',
-  },
-  container: {
-    flex: 1,
-    borderTopLeftRadius: 25,
-    borderTopRightRadius: 25,
-    backgroundColor: '#FFF',
-    flexGrow: 2,
-  },
-  header: {
-    fontSize: 36,
-    color: '#FFF',
-    fontFamily: 'Abel',
-  },
-  textProp: {
-    color: '#6A539D',
-    fontSize: 24,
-    fontFamily: 'Roboto',
-    fontWeight: 'bold',
-  },
-});
 
-export default WelcomeScreen;
+const styles = StyleSheet.create({
+    container: {
+        backgroundColor: globalStyles.colorSet.PRIMARY,
+        flex: 1
+    },
+    header: {
+        paddingVertical: 10,
+    },
+    headerText: {
+        fontSize: globalStyles.fontSizeSet.fontLarge,
+        color: globalStyles.colorSet.SECONDARY,
+        fontFamily: globalStyles.fontFamilySet.fontFamilySecondary,
+    },
+    authContainer: {
+        flex: 4,
+        borderTopRightRadius: 25,
+        borderTopLeftRadius: 25,
+        backgroundColor: globalStyles.colorSet.SECONDARY,
+        flexGrow: 1
+        //borderWidth: 2,
+        // borderColor: 'red',
+    },
+    authFields: {
+        paddingVertical: 10,
+        paddingHorizontal: 10,
+        justifyContent: 'flex-start',
+        flexGrow: 0.7
+    },
+    authTitle: {
+        color: globalStyles.colorSet.PRIMARY,
+        fontSize: globalStyles.fontSizeSet.fontMedium,
+        fontFamily: globalStyles.fontFamilySet.fontFamilyPrimary,
+        fontWeight: 'bold',
+    },
+    authEmail: {
+        flexGrow: 1
+    },
 
-const styles = StyleSheet.create({});
+    authPassword: {
+        flexGrow: 1
+
+    },
+    authInput: {
+        flexDirection: 'row',
+        borderBottomColor: globalStyles.colorSet.PRIMARY,
+        borderBottomWidth: 0.5,
+        marginTop: 5,
+        alignItems: 'center',
+        flexGrow: 0.32
+    },
+    btnForgottenPassword: {
+        fontSize: globalStyles.fontSizeSet.fontRegular,
+        fontFamily: globalStyles.fontFamilySet.fontFamilyPrimary,
+        color: globalStyles.colorSet.PRIMARY,
+        fontWeight: 'bold',
+    },
+    btnContainer: {
+        borderColor: 'red',
+        justifyContent: 'flex-end',
+        flexGrow: 2,
+        alignItems: 'stretch'
+    },
+    buttons: {
+        flexGrow: 0.2,
+        justifyContent: 'space-evenly',
+        alignItems: 'center'
+    },
+    inputs: {
+        paddingLeft: 5,
+        fontSize: globalStyles.fontSizeSet.fontSmall,
+    },
+})
+
+export default WelcomeScreen

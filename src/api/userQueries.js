@@ -1,6 +1,6 @@
-import { authQuery } from './authBaseQuery';
+import { api } from './baseQuery';
 
-export const userQueries = authQuery.injectEndpoints({
+export const userQueries = api.injectEndpoints({
   endpoints: (builder) => ({
     register: builder.mutation({
       query: (credentials) => ({

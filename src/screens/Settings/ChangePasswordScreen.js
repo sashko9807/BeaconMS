@@ -1,15 +1,19 @@
-import { View, Text, Pressable, StyleSheet, TextInput } from 'react-native';
+import { View, StyleSheet, ScrollView, KeyboardAvoidingView } from 'react-native';
 import { useState } from 'react';
+
 import MainLayout from '../../container/MainLayout';
 
+import ActivityIndicatorComponent from '../../components/ActivityIndicatorComponent';
 import ApiResultModal from '../../components/ApiResultModal';
-import GenericButton from '../../components/GenericButton';
-import UserInput from '../../components/UserInput';
+import { InlineButton } from '../../components/Buttons';
+import ControlledUserInput from '../../components/ControlledUserInput';
 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import { useForm } from 'react-hook-form';
-import { useUpdatePasswordMutation } from '../../redux/userQueries';
+
+import { useUpdatePasswordMutation } from '../../api/userQueries';
+
 
 const ChangePasswordScreen = ({ navigation }) => {
   const {
@@ -53,15 +57,7 @@ const ChangePasswordScreen = ({ navigation }) => {
         <ApiResultModal
           isVisible={true}
           message={
-            <View
-              style={{
-                flex: 1,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <ActivityIndicator size="small" color="#0000ff" />
-            </View>
+            <ActivityIndicatorComponent />
           }
         />
       )}
@@ -77,27 +73,10 @@ const ChangePasswordScreen = ({ navigation }) => {
         />
       )}
       <MainLayout>
-        <View style={{ borderTopRightRadius: 25, borderTopLeftRadius: 25 }}>
-          <KeyboardAwareScrollView
-            enableOnAndroid={true}
-            enableResetScrollToCoords={true}
-            scrollEnabled={true}
-            resetScrollToCoords={{ x: 0, y: 0 }}
-            extraScrollHeight={20}
-            contentContainerStyle={{}}
-            keyboardShouldPersistTaps="handled"
-          >
-            <View
-              style={{
-                margin: 22,
-                flexGrow: 1,
-                backgroundColor: '#FFF',
-                borderTopRightRadius: 25,
-                borderTopLeftRadius: 25,
-                width: '89%',
-              }}
-            >
-              <UserInput
+        <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }} enabled keyboardVerticalOffset={80}>
+          <ScrollView keyboardShouldPersistTaps="handled">
+            <View style={styles.wrapper}>
+              <ControlledUserInput
                 title={'Current Password'}
                 name={'currPassword'}
                 control={control}
@@ -107,14 +86,8 @@ const ChangePasswordScreen = ({ navigation }) => {
                 }}
                 secureTextEntry
               />
-              <View
-                style={{
-                  marginTop: 40,
-                  borderTopRightRadius: 25,
-                  borderTopLeftRadius: 25,
-                }}
-              >
-                <UserInput
+              <View style={styles.verticalSpacing}>
+                <ControlledUserInput
                   title={'New Password'}
                   name={'newPassword'}
                   control={control}
@@ -131,14 +104,8 @@ const ChangePasswordScreen = ({ navigation }) => {
                   secureTextEntry
                 />
               </View>
-              <View
-                style={{
-                  marginTop: 40,
-                  borderTopRightRadius: 25,
-                  borderTopLeftRadius: 25,
-                }}
-              >
-                <UserInput
+              <View style={styles.verticalSpacing}>
+                <ControlledUserInput
                   title={'Confirm New Password'}
                   name={'confirmNewPassword'}
                   control={control}
@@ -151,35 +118,34 @@ const ChangePasswordScreen = ({ navigation }) => {
                   secureTextEntry
                 />
               </View>
-              <View
-                style={{
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginTop: 60,
-                  marginBottom: 20,
-                }}
-              >
-                <GenericButton
+              <View style={styles.btnChangePassword}>
+                <InlineButton
+                  title="Change Password"
                   onPress={handleSubmit(updateUserPassword)}
-                  name="Change Password"
-                  borderStyle={'inline'}
+                  borderRadius={10}
                 />
               </View>
             </View>
-          </KeyboardAwareScrollView>
-        </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
       </MainLayout>
     </>
   );
 };
 
 const styles = StyleSheet.create({
-  textProp: {
-    color: '#6A539D',
-    fontSize: 24,
-    fontFamily: 'Roboto',
-    fontWeight: 'bold',
+  wrapper: {
+    marginTop: 10,
+    paddingHorizontal: 15,
   },
+  verticalSpacing: {
+    marginTop: 40
+  },
+  btnChangePassword: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 60,
+  }
 });
 
 export default ChangePasswordScreen;

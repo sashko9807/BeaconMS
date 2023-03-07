@@ -1,5 +1,4 @@
 import LocationEnabler from 'react-native-location-enabler';
-import { useEffect } from 'react';
 
 export const useLocationTurnOn = () => {
   const {
@@ -11,9 +10,5 @@ export const useLocationTurnOn = () => {
     priority: HIGH_ACCURACY,
   });
 
-  useEffect(() => {
-    if (!enabled) {
-      requestResolution();
-    }
-  }, []);
+  return [enabled, requestResolution]
 };

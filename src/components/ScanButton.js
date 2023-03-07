@@ -1,35 +1,39 @@
-import { View, Text, Pressable } from 'react-native';
-import React from 'react';
+import { View, Text, Pressable, StyleSheet } from 'react-native';
+import globalStyles from '../globals/styles'
 
 const ScanButton = ({ onPress, isScanning }) => {
   return (
-    <View
-      style={{
-        height: '10%',
-        width: '20%',
-        borderWidth: 1,
-        position: 'absolute',
-        bottom: '10%',
-        left: '70%',
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderBottomLeftRadius: 25,
-        borderBottomRightRadius: 25,
-        borderTopLeftRadius: 25,
-        borderTopRightRadius: 25,
-        backgroundColor: '#6A539D',
-        borderColor: '#FFF',
-      }}
-    >
+    <View style={styles.buttonContainer} >
       <Pressable onPress={onPress}>
-        {isScanning ? (
-          <Text style={{ color: '#FFF', fontSize: 17 }}>Stop</Text>
-        ) : (
-          <Text style={{ color: '#FFF', fontSize: 17 }}>Scan</Text>
-        )}
+        <Text style={styles.buttonText}>{isScanning ? "Stop" : "Start"}</Text>
       </Pressable>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  buttonContainer: {
+    width: '20%',
+    maxWidth: 200,
+    aspectRatio: 16 / 10,
+    borderWidth: 1,
+    position: 'absolute',
+    bottom: '10%',
+    right: '5%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderBottomLeftRadius: 25,
+    borderBottomRightRadius: 25,
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+    backgroundColor: globalStyles.colorSet.PRIMARY,
+    borderColor: globalStyles.colorSet.SECONDARY,
+  },
+  buttonText: {
+    color: globalStyles.colorSet.SECONDARY,
+    fontSize: globalStyles.fontSizeSet.fontRegular,
+    fontFamily: globalStyles.fontFamilySet.fontFamilyPrimary
+  }
+})
 
 export default ScanButton;

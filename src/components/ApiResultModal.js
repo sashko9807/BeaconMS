@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Modal, Pressable } from 'react-native';
-import React from 'react';
+import globalStyles from '../globals/styles'
 
 const ApiResultModal = ({
   isVisible,
@@ -17,20 +17,18 @@ const ApiResultModal = ({
       >
         <View style={modalStyle.centerView}>
           <View style={modalStyle.modalView}>
-            <Text style={modalStyle.modalTitle}>{title}</Text>
             <View>
-              <Text style={modalStyle.modalMessage}>{message}</Text>
-            </View>
-            <View
-              style={{
-                marginTop: 10,
-                flex: 1,
-                alignItems: 'center',
-              }}
-            >
-              <Pressable onPress={onConfirm} style={modalStyle.button}>
-                <Text>OK</Text>
-              </Pressable>
+              <View style={modalStyle.modalContainer}>
+                <Text style={modalStyle.modalHeaderText}>{title}</Text>
+                <View>
+                  <Text style={modalStyle.modalBodyText}>{message}</Text>
+                </View>
+                <View style={modalStyle.btnContainer}>
+                  <Pressable onPress={onConfirm} style={modalStyle.btn}>
+                    <Text style={modalStyle.btnText}>OK</Text>
+                  </Pressable>
+                </View>
+              </View>
             </View>
           </View>
         </View>
@@ -43,22 +41,15 @@ export default ApiResultModal;
 
 const modalStyle = StyleSheet.create({
   centerView: {
-    position: 'absolute',
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 22,
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
+    ...StyleSheet.absoluteFill,
     margin: 'auto',
   },
+
   modalView: {
-    flex: 1,
-    margin: 35,
-    backgroundColor: 'white',
-    borderRadius: 8,
-    padding: 35,
+    backgroundColor: globalStyles.colorSet.SECONDARY,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
@@ -68,26 +59,38 @@ const modalStyle = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-    maxHeight: '40%',
-    minWidth: '85%',
   },
-  modalTitle: {
-    fontSize: 20,
-    marginBottom: 10,
-    color: '#6A539D',
-  },
-  modalMessage: {
-    fontSize: 17,
-  },
-  button: {
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#6A539D',
+  modalContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    width: '90%',
-    height: '50%',
-    position: 'absolute',
-    bottom: '-10%',
+    paddingVertical: 25,
+    paddingHorizontal: 24,
+    minWidth: 370,
+    maxWidth: 370
   },
+  modalHeaderText: {
+    fontFamily: globalStyles.fontFamilySet.fontFamilyPrimary,
+    fontSize: globalStyles.fontSizeSet.fontMedium,
+    color: globalStyles.colorSet.PRIMARY,
+  },
+  modalBodyText: {
+    textAlign: 'center',
+    fontFamily: globalStyles.fontFamilySet.fontFamilyPrimary,
+    fontSize: globalStyles.fontSizeSet.fontRegular,
+  },
+  btnContainer: {
+    //justifyContent: 'flex-end'
+  },
+  btn: {
+    marginTop: 50,
+    borderWidth: 1,
+    borderColor: globalStyles.colorSet.PRIMARY,
+  },
+  btnText: {
+    paddingVertical: 10,
+    paddingHorizontal: 100,
+    fontFamily: globalStyles.fontFamilySet.fontFamilyPrimary,
+    fontSize: globalStyles.fontSizeSet.fontRegular,
+  }
+
 });

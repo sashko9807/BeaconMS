@@ -1,8 +1,8 @@
-import { authQuery } from './authBaseQuery';
+import { api } from './baseQuery';
 
-export const beaconQueries = authQuery.injectEndpoints({
+export const beaconQueries = api.injectEndpoints({
   endpoints: (builder) => ({
-    addWithText: builder.mutation({
+    addBeacon: builder.mutation({
       query: (beaconData) => ({
         url: '/beacon/',
         method: 'POST',
@@ -11,10 +11,10 @@ export const beaconQueries = authQuery.injectEndpoints({
       invalidatesTags: ['Beacon'],
     }),
     editBeacon: builder.mutation({
-      query: (beaconData) => ({
-        url: `/beacon/${beaconData._id}`,
+      query: ({ beaconID, beaconData }) => ({
+        url: `/beacon/${beaconID}`,
         method: 'PUT',
-        params: { ...beaconData },
+        body: beaconData,
       }),
       invalidatesTags: ['Beacon'],
     }),
@@ -37,8 +37,9 @@ export const beaconQueries = authQuery.injectEndpoints({
 });
 
 export const {
-  useAddWithTextMutation,
+  useAddBeaconMutation,
   useDeleteBeaconMutation,
   useGetBeaconsForBuildingQuery,
   useEditBeaconMutation,
 } = beaconQueries;
+

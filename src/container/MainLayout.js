@@ -1,24 +1,28 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import React from 'react';
+import globalStyles from '../globals/styles'
 
 const MainLayout = ({ children }) => {
   return (
     <View style={mainStyle.wrapper}>
-      <View style={mainStyle.container}>{children}</View>
+      <View style={mainStyle.container}>
+        {children}
+      </View>
     </View>
   );
 };
 
 const mainStyle = StyleSheet.create({
   wrapper: {
-    backgroundColor: '#6A539D',
-    //width: "100%",
+    ...StyleSheet.absoluteFill,
+    backgroundColor: globalStyles.colorSet.PRIMARY,
   },
   container: {
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
-    backgroundColor: '#FFF',
     height: '100%',
+    backgroundColor: globalStyles.colorSet.SECONDARY,
+    overflow: 'hidden'
   },
 });
 
