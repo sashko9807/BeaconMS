@@ -12,8 +12,8 @@ import { useApiResultReducer, ACTIONS } from '../../hooks/useApiResultReducer';
 import { moderateScale } from '../../utils/scaling';
 
 const WelcomeScreen = ({ navigation }) => {
-    const [email, setEmail] = useState('sashko506@gmail.com');
-    const [password, setPassword] = useState('kxzkzk');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
     const [login, { isLoading, isSuccess, isError, error }] = useLoginMutation();
     const [store, dispatch] = useApiResultReducer()
