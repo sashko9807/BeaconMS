@@ -8,7 +8,7 @@ import { REGISTER_MODAL, FORGOTTEN_PASSWORD_MODAL } from '../../globals/Navigati
 import { useLoginMutation } from '../../api/userQueries';
 import ApiResultModal from '../../components/ApiResultModal'
 import ActivityIndicatorComponent from '../../components/ActivityIndicatorComponent';
-import { useApiResultReducer } from '../../hooks/useApiResultReducer';
+import { useApiResultReducer, ACTIONS } from '../../hooks/useApiResultReducer';
 import { moderateScale } from '../../utils/scaling';
 
 const WelcomeScreen = ({ navigation }) => {
