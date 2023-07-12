@@ -82,6 +82,7 @@ const WelcomeScreen = ({ navigation }) => {
                                 <TextInput
                                     adjustsFontSizeToFit
                                     value={password}
+                                    secureTextEntry
                                     onChangeText={setPassword}
                                     placeholder="Password"
                                     style={styles.inputs}
@@ -183,6 +184,7 @@ const styles = StyleSheet.create({
     inputs: {
         paddingLeft: 5,
         fontSize: globalStyles.fontSizeSet.fontSmall,
+        width: '100%'
     },
 })
 
