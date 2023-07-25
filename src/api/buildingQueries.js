@@ -1,18 +1,17 @@
 import { api } from './baseQuery';
+import { endpoints } from '../globals/apiEndpoints';
 
 export const buildingQueries = api.injectEndpoints({
   endpoints: (builder) => ({
     getBuilding: builder.query({
       query: () => ({
-        url: '/building/:userId',
-        method: 'GET',
+        ...endpoints.buildings.getBuildings
       }),
       providesTags: ['Building'],
     }),
     addBuilding: builder.mutation({
       query: ({ formData }) => ({
-        url: '/building/add',
-        method: 'POST',
+        ...endpoints.buildings.addBuilding,
         body: formData,
       }),
       invalidatesTags: ['Building'],

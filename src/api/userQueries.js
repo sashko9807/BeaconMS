@@ -1,32 +1,29 @@
 import { api } from './baseQuery';
+import { endpoints } from '../globals/apiEndpoints';
 
 export const userQueries = api.injectEndpoints({
   endpoints: (builder) => ({
     register: builder.mutation({
       query: (credentials) => ({
-        url: '/user/register',
-        method: 'POST',
+        ...endpoints.user.register,
         body: { ...credentials },
       }),
     }),
     login: builder.mutation({
       query: (credentials) => ({
-        url: '/user/login',
-        method: 'POST',
+        ...endpoints.user.login,
         body: { ...credentials },
       }),
     }),
     updatePassword: builder.mutation({
       query: (credentials) => ({
-        url: `/user/:id`,
-        method: 'PUT',
+        ...endpoints.user.updatePassword(credentials.id),
         params: { ...credentials },
       }),
     }),
     forgotPassword: builder.mutation({
       query: ({ email }) => ({
-        url: `/user/forgotPassword/${email}`,
-        method: 'PUT',
+        ...endpoints.user.forgottenPassword(email),
         params: email,
       }),
     }),

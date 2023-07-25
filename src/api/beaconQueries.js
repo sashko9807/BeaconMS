@@ -1,34 +1,31 @@
 import { api } from './baseQuery';
+import { endpoints } from '../globals/apiEndpoints';
 
 export const beaconQueries = api.injectEndpoints({
   endpoints: (builder) => ({
     addBeacon: builder.mutation({
       query: (beaconData) => ({
-        url: '/beacon/',
-        method: 'POST',
+        ...endpoints.beacon.addBeacon,
         body: { ...beaconData },
       }),
       invalidatesTags: ['Beacon'],
     }),
     editBeacon: builder.mutation({
       query: ({ beaconID, beaconData }) => ({
-        url: `/beacon/${beaconID}`,
-        method: 'PUT',
+        ...endpoints.beacon.editBeacon(beaconID),
         body: beaconData,
       }),
       invalidatesTags: ['Beacon'],
     }),
     getBeaconsForBuilding: builder.query({
       query: (buildingID) => ({
-        url: `/beacon/${buildingID}`,
-        method: 'GET',
+        ...endpoints.beacon.getBeacons(buildingID)
       }),
       providesTags: ['Beacon'],
     }),
     deleteBeacon: builder.mutation({
       query: (beaconID) => ({
-        url: `/beacon/${{ beaconID }}`,
-        method: 'DELETE',
+        ...endpoints.beacon.deleteBeacon(beaconID),
         params: beaconID,
       }),
       invalidatesTags: ['Beacon'],

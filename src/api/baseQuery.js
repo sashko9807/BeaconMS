@@ -1,9 +1,10 @@
 import { createApi, fetchBaseQuery, retry } from '@reduxjs/toolkit/query/react';
 import { reAuth, logOut } from '../redux/authActions';
 import { API_URL, CDN_SERVER_URL } from '@env'
+import { endpoints } from '../globals/apiEndpoints';
 
 export const BASE_URL = API_URL ?? 'http://10.0.2.2:3001/';
-export const CDN_URL = CDN_SERVER_URL ?? 'http://10.0.2.2:3001/';
+export const CDN_URL = CDN_SERVER_URL ?? 'http://10.0.2.2:3001/uploads';
 
 const CONN_TIMEOUT_MS = 10000
 
@@ -33,13 +34,13 @@ const baseApiWithTimeout = (args, api, extraOptions) => {
 }
 
 const baseApiWithReauth = retry(async (args, api, extraOptions) => {
+  console.log(args)
   let result = await baseApiWithTimeout(args, api, extraOptions);
   if (result.error?.originalStatus === 403) {
     const refreshToken = api.getState().auth.refreshToken;
     const refreshResult = await baseApiWithTimeout(
       {
-        url: '/auth/refreshToken',
-        method: 'POST',
+        ...endpoints.auth.refresh,
         body: { refreshToken },
       },
       api,
