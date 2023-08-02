@@ -20,7 +20,7 @@ const RangeForBeaconsScreen = ({ navigation }) => {
   const [isBluetoothEnabled, requestToEnable] = useGetBluetoothState();
 
 
-  const [beaconsInRange, scan, setIsScanning] = useScanForBeacons();
+  const [beaconsInRange, scan, { setIsScanning }] = useScanForBeacons();
 
 
   const LocationDisabled = () => {
@@ -58,28 +58,29 @@ const RangeForBeaconsScreen = ({ navigation }) => {
   if (!isLocationPermissionGranted()) return <PermissionNotGranted />
   if (!enabled) return <LocationDisabled />
   if (!isBluetoothEnabled()) return <BluetoothDisabled />
-
   return (
     <MainLayout>
       <ScrollView style={{ flex: 1 }}>
         {beaconsInRange.map((currBeacon) => {
-          <View key={`${currBeacon.uuid}-${currBeacon.major}-${currBeacon.minor}`} style={{ paddingHorizontal: 15 }}>
-            <BeaconCard
-              onPress={() => {
-                navigation.navigate(ADD_BEACON, {
-                  beacons: { ...currBeacon },
-                });
-              }}
-              beaconData={{
-                beaconType: currBeacon.beacon_type,
-                distance: currBeacon.distance.toFixed(2),
-                uuid: currBeacon.uuid,
-                major: currBeacon.major,
-                minor: currBeacon.minor,
-                rssi: currBeacon.rssi,
-              }}
-            />
-          </View>
+          return (
+            <View key={`${currBeacon.uuid}-${currBeacon.major}-${currBeacon.minor}`} style={{ paddingHorizontal: 15 }}>
+              <BeaconCard
+                onPress={() => {
+                  navigation.navigate(ADD_BEACON, {
+                    beacons: { ...currBeacon },
+                  });
+                }}
+                beaconData={{
+                  beaconType: currBeacon.beacon_type,
+                  distance: currBeacon.distance.toFixed(2),
+                  uuid: currBeacon.uuid,
+                  major: currBeacon.major,
+                  minor: currBeacon.minor,
+                  rssi: currBeacon.rssi,
+                }}
+              />
+            </View>
+          )
 
         })}
       </ScrollView>

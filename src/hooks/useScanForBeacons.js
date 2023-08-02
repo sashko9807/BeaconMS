@@ -38,10 +38,17 @@ export const useScanForBeacons = () => {
 
     DeviceEventEmitter.addListener('beaconsDidRange', (data) => {
       data.beacons.forEach((elem) => {
-        setBeaconsInRange(elem);
+        setBeaconsInRange((beaconArray) => {
+          const atIndex = beaconArray.findIndex((beacons) => beacons.uuid === elem.uuid)
+          if (atIndex !== -1) {
+            return [{ ...beaconArray[atIndex], ...elem }]
+          }
+
+          return [...beaconArray, elem]
+        });
       });
     });
   };
 
-  return [beaconsInRange, scan, setIsScanning];
+  return [beaconsInRange, scan, { setIsScanning }];
 };
