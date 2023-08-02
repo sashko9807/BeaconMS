@@ -2,6 +2,7 @@ apply plugin: "com.android.application"
 
 import com.android.build.OutputFile
 import org.apache.tools.ant.taskdefs.condition.Os
+import groovy.swing.SwingBuilder
 
 /**
  * The react.gradle file registers a task for each build variant (e.g. bundleDebugJsAndAssets
@@ -238,6 +239,15 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+            if(project.hasProperty('BEACONMS_RELEASE_STORE_FILE')) {
+
+            storeFile file(BEACONMS_RELEASE_STORE_FILE)
+            storePassword BEACONMS_RELEASE_STORE_PASSWORD
+            keyAlias BEACONMS_RELEASE_KEY_ALIAS
+            keyPassword BEACONMS_RELEASE_KEY_PASSWORD
+            }
+        }        
     }
     buildTypes {
         debug {
@@ -246,7 +256,7 @@ android {
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
