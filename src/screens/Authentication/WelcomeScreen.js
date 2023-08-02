@@ -10,6 +10,7 @@ import ApiResultModal from '../../components/ApiResultModal'
 import ActivityIndicatorComponent from '../../components/ActivityIndicatorComponent';
 import { useApiResultReducer, ACTIONS } from '../../hooks/useApiResultReducer';
 import { moderateScale } from '../../utils/scaling';
+import KeyboardAwareScrollViewWrapper from '../../components/KeyboardAwareScrollView';
 
 const WelcomeScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
@@ -47,6 +48,7 @@ const WelcomeScreen = ({ navigation }) => {
                 message={store.message}
                 onConfirm={() => dispatch({ type: ACTIONS.HIDE_MODAL })}
             />
+
             <View style={styles.container}>
                 <View style={styles.header}>
                     <Text style={[styles.headerText, { textAlign: 'center' }]}>Welcome!</Text>
@@ -61,52 +63,53 @@ const WelcomeScreen = ({ navigation }) => {
                     </Text>
                 </View>
                 <View style={styles.authContainer}>
-                    <View style={styles.authFields}>
-                        <View style={styles.authEmail}>
-                            <Text adjustsFontSizeToFit style={styles.authTitle}>Email</Text>
-                            <View style={styles.authInput}>
-                                <UserIcon width={moderateScale(25)} height={moderateScale(25)} />
-                                <TextInput
-                                    adjustsFontSizeToFit
-                                    placeholder="Your Email"
-                                    value={email}
-                                    onChangeText={setEmail}
-                                    style={styles.inputs}
-                                />
+                    <KeyboardAwareScrollViewWrapper>
+                        <View style={styles.authFields}>
+                            <View style={styles.authEmail}>
+                                <Text adjustsFontSizeToFit style={styles.authTitle}>Email</Text>
+                                <View style={styles.authInput}>
+                                    <UserIcon width={moderateScale(25)} height={moderateScale(25)} />
+                                    <TextInput
+                                        adjustsFontSizeToFit
+                                        placeholder="Your Email"
+                                        value={email}
+                                        onChangeText={setEmail}
+                                        style={styles.inputs}
+                                    />
+                                </View>
+                            </View>
+                            <View style={styles.authPassword}>
+                                <Text adjustsFontSizeToFit style={styles.authTitle}>Password</Text>
+                                <View style={styles.authInput}>
+                                    <PasswordIcon width={moderateScale(25)} height={moderateScale(25)} />
+                                    <TextInput
+                                        adjustsFontSizeToFit
+                                        value={password}
+                                        secureTextEntry
+                                        onChangeText={setPassword}
+                                        placeholder="Password"
+                                        style={styles.inputs}
+                                    />
+                                </View>
+                                <Pressable style={{ alignSelf: 'flex-start' }}
+                                    onPress={() => navigation.navigate(FORGOTTEN_PASSWORD_MODAL)}
+                                >
+                                    <Text style={styles.btnForgottenPassword}>
+                                        Forgot password?
+                                    </Text>
+                                </Pressable>
                             </View>
                         </View>
-                        <View style={styles.authPassword}>
-                            <Text adjustsFontSizeToFit style={styles.authTitle}>Password</Text>
-                            <View style={styles.authInput}>
-                                <PasswordIcon width={moderateScale(25)} height={moderateScale(25)} />
-                                <TextInput
-                                    adjustsFontSizeToFit
-                                    value={password}
-                                    secureTextEntry
-                                    onChangeText={setPassword}
-                                    placeholder="Password"
-                                    style={styles.inputs}
-                                />
-                            </View>
-                            <Pressable style={{ alignSelf: 'flex-start' }}
-                                onPress={() => navigation.navigate(FORGOTTEN_PASSWORD_MODAL)}
-                            >
-                                <Text style={styles.btnForgottenPassword}>
-                                    Forgot password?
-                                </Text>
-                            </Pressable>
-                        </View>
-                    </View>
-                    <View style={styles.btnContainer}>
-                        <View style={styles.buttons}>
+                        <View style={styles.btnContainer}>
                             <InlineButton title="Sign in" onPress={() => handleSubmit()} borderRadius={10} />
                             <OutlineButton
                                 onPress={() => navigation.navigate(REGISTER_MODAL)}
                                 title="Sign up"
                                 borderRadius={10}
+                                additionStyle={{ marginTop: 10 }}
                             />
                         </View>
-                    </View>
+                    </KeyboardAwareScrollViewWrapper>
                 </View>
             </View>
         </>
@@ -128,15 +131,16 @@ const styles = StyleSheet.create({
         fontFamily: globalStyles.fontFamilySet.fontFamilySecondary,
     },
     authContainer: {
-        flex: 4,
+        flex: 1,
+        flexGrow: 1,
         borderTopRightRadius: 25,
         borderTopLeftRadius: 25,
         backgroundColor: globalStyles.colorSet.SECONDARY,
-        flexGrow: 1
         //borderWidth: 2,
         // borderColor: 'red',
     },
     authFields: {
+        flex: 2,
         paddingVertical: 10,
         paddingHorizontal: 10,
         justifyContent: 'flex-start',
@@ -149,11 +153,13 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     authEmail: {
-        flexGrow: 1
+        // flexGrow: 1
+        marginVertical: moderateScale(10)
     },
 
     authPassword: {
-        flexGrow: 1
+        marginVertical: moderateScale(10)
+        // flexGrow: 1
 
     },
     authInput: {
@@ -171,15 +177,15 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     btnContainer: {
-        borderColor: 'red',
-        justifyContent: 'flex-end',
-        flexGrow: 2,
-        alignItems: 'stretch'
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginTop: moderateScale(10),
     },
     buttons: {
-        flexGrow: 0.2,
-        justifyContent: 'space-evenly',
-        alignItems: 'center'
+        position: 'relative',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        borderWidth: 4,
     },
     inputs: {
         paddingLeft: 5,

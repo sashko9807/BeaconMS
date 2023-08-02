@@ -2,9 +2,9 @@ import { View, Text, Pressable, StyleSheet } from 'react-native';
 import globalStyles from '../globals/styles'
 import { moderateScale } from '../utils/scaling';
 
-export const InlineButton = ({ onPress, title = "NO TITLE", width = '80%', height = 0, borderRadius = 0 }) => {
+export const InlineButton = ({ onPress, title = "NO TITLE", width = '80%', additionStyle = {}, height = 0, borderRadius = 0 }) => {
   return (
-    <View style={{ width: width }}>
+    <View style={{ width: width, ...additionStyle }}>
       <Pressable onPress={onPress} style={[styles.buttonInline, { borderRadius: moderateScale(borderRadius) }]}>
         <Text style={styles.buttonInlineText}>
           {title}
@@ -14,9 +14,9 @@ export const InlineButton = ({ onPress, title = "NO TITLE", width = '80%', heigh
   );
 };
 
-export const OutlineButton = ({ onPress, title = "NO TITLE", width = '80%', height = 0, borderRadius = 0 }) => {
+export const OutlineButton = ({ onPress, title = "NO TITLE", width = '80%', additionStyle = {}, height = 0, borderRadius = 0 }) => {
   return (
-    <View style={[styles.imgButtonContainer, { width: width }]}>
+    <View style={{ width: width, ...additionStyle }}>
       <Pressable onPress={onPress} style={[styles.buttonOutline, { borderRadius: moderateScale(borderRadius) }]}>
         <Text style={styles.buttonOutlineText}>
           {title}

@@ -9,9 +9,11 @@ import ApiResultModal from '../../components/ApiResultModal';
 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useForm } from 'react-hook-form';
+import { moderateScale } from '../../utils/scaling';
 
 import { useRegisterMutation } from '../../api/userQueries';
 import globalStyles from '../../globals/styles'
+import KeyboardAwareScrollViewWrapper from '../../components/KeyboardAwareScrollView';
 
 const EMAIL_REGEXP =
   /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
@@ -75,56 +77,59 @@ const RegisterModal = ({ navigation }) => {
           <Text style={mainStyle.headerText}>Register</Text>
         </View>
         <View style={mainStyle.authContainer}>
-          <View style={mainStyle.authFields}>
-            <ControlledUserInput
-              title={'Email'}
-              name={'email'}
-              control={control}
-              placeholder={'Email'}
-              rules={{
-                required: 'Email field is required',
-                pattern: { value: EMAIL_REGEXP, message: 'Invalid email' },
-              }}
-            />
-            <View style={mainStyle.spacing}>
+          <KeyboardAwareScrollViewWrapper>
+            <View style={mainStyle.authFields}>
               <ControlledUserInput
-                title={'Password'}
-                name={'password'}
+                title={'Email'}
+                name={'email'}
                 control={control}
-                placeholder={'Password'}
+                placeholder={'Email'}
                 rules={{
-                  required: 'Password is required',
-                  minLength: {
-                    value: 6,
-                    message: 'Password must be at least 6 characters long',
-                  },
+                  required: 'Email field is required',
+                  pattern: { value: EMAIL_REGEXP, message: 'Invalid email' },
                 }}
               />
+              <View style={mainStyle.spacing}>
+                <ControlledUserInput
+                  title={'Password'}
+                  name={'password'}
+                  control={control}
+                  placeholder={'Password'}
+                  rules={{
+                    required: 'Password is required',
+                    minLength: {
+                      value: 6,
+                      message: 'Password must be at least 6 characters long',
+                    },
+                  }}
+                />
+              </View>
+              <View style={mainStyle.spacing}>
+                <ControlledUserInput
+                  title={'Confirm Password'}
+                  name={'confirmPassword'}
+                  control={control}
+                  placeholder={'Confirm Password'}
+                  rules={{
+                    required: 'Confirm Password field is required',
+                    validate: (value) =>
+                      value === pwd || "Passwords don't match",
+                  }}
+                />
+              </View>
             </View>
-            <View style={mainStyle.spacing}>
-              <ControlledUserInput
-                title={'Confirm Password'}
-                name={'confirmPassword'}
-                control={control}
-                placeholder={'Confirm Password'}
-                rules={{
-                  required: 'Confirm Password field is required',
-                  validate: (value) =>
-                    value === pwd || "Passwords don't match",
-                }}
-              />
+            <View style={mainStyle.btnContainer}>
+              <View style={mainStyle.buttons}>
+                <InlineButton title="Register" onPress={handleSubmit(registerUser)} borderRadius={10} />
+                <OutlineButton
+                  onPress={() => navigation.goBack()}
+                  title="Sign in"
+                  borderRadius={10}
+                  additionStyle={{ marginTop: moderateScale(10) }}
+                />
+              </View>
             </View>
-          </View>
-          <View style={mainStyle.btnContainer}>
-            <View style={mainStyle.buttons}>
-              <InlineButton title="Register" onPress={handleSubmit(registerUser)} borderRadius={10} />
-              <OutlineButton
-                onPress={() => navigation.goBack()}
-                title="Sign in"
-                borderRadius={10}
-              />
-            </View>
-          </View>
+          </KeyboardAwareScrollViewWrapper>
         </View>
       </View>
     </>
@@ -146,7 +151,7 @@ const mainStyle = StyleSheet.create({
     fontFamily: globalStyles.fontFamilySet.fontFamilySecondary,
   },
   authContainer: {
-    flexGrow: 4,
+    flexGrow: 1,
     borderTopRightRadius: 25,
     borderTopLeftRadius: 25,
     backgroundColor: globalStyles.colorSet.SECONDARY,
@@ -157,7 +162,6 @@ const mainStyle = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 10,
     justifyContent: 'flex-start',
-    flexGrow: 0.7
   },
   authTitle: {
     color: globalStyles.colorSet.PRIMARY,
@@ -169,7 +173,6 @@ const mainStyle = StyleSheet.create({
     flexDirection: 'row',
     borderBottomColor: globalStyles.colorSet.PRIMARY,
     borderBottomWidth: 0.5,
-    marginTop: 5,
     alignItems: 'center',
     flexGrow: 0.32
   },
@@ -181,9 +184,9 @@ const mainStyle = StyleSheet.create({
     fontWeight: 'bold',
   },
   btnContainer: {
+    marginTop: moderateScale(120),
     borderColor: 'red',
     justifyContent: 'flex-end',
-    flexGrow: 2,
   },
   buttons: {
     flexGrow: 0.2,
@@ -191,7 +194,7 @@ const mainStyle = StyleSheet.create({
     alignItems: 'center'
   },
   spacing: {
-    marginTop: 40
+    marginTop: 20
   }
 
 });

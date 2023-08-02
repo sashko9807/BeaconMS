@@ -41,7 +41,6 @@ const ShowBeaconDataScreen = ({ route }) => {
 };
 
 const ImageData = ({ imageUri }) => {
-  console.log(`${CDN_URL}/beacons/${imageUri}`)
   return (
     <View style={{ flex: 1 }}>
       <Image source={{ uri: `${CDN_URL}/beacons/${imageUri}` }} style={styles.bgImage} />
