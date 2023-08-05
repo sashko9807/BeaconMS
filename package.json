@@ -4,6 +4,11 @@
   "scripts": {
     "start": "expo start --dev-client",
     "android": "expo run:android",
+    "android:bundle": "mkdirp android/app/src/main/assets && npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle",
+    "android:buildDebug": "yarn android:bundle && cd android && gradlew --stop && gradlew assembleDebug",
+    "android:installDebug": "cd android && gradlew installDebug",
+    "android:buildRelease": "yarn android:bundle && cd android && gradlew --stop && gradlew assembleRelease",
+    "android:installRelease": "cd android && gradlew installRelease",
     "ios": "expo run:ios",
     "web": "expo start --web",
     "eject": "expo eject"
@@ -50,6 +55,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
+    "mkdirp": "^3.0.1",
     "react-native-dotenv": "^3.4.8",
     "react-native-svg-transformer": "^1.0.0",
     "yarn-upgrade-all": "^0.7.1"
