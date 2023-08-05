@@ -13,7 +13,7 @@ import { moderateScale } from '../../utils/scaling';
 
 import { useRegisterMutation } from '../../api/userQueries';
 import globalStyles from '../../globals/styles'
-import KeyboardAwareScrollViewWrapper from '../../components/KeyboardAwareScrollView';
+import KeyboardAwareScrollViewWrapper from '../../components/KeyboardAwareScrollViewWrapper';
 
 const EMAIL_REGEXP =
   /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
@@ -152,6 +152,7 @@ const mainStyle = StyleSheet.create({
   },
   authContainer: {
     flexGrow: 1,
+    marginTop: 20,
     borderTopRightRadius: 25,
     borderTopLeftRadius: 25,
     backgroundColor: globalStyles.colorSet.SECONDARY,
@@ -184,7 +185,7 @@ const mainStyle = StyleSheet.create({
     fontWeight: 'bold',
   },
   btnContainer: {
-    marginTop: moderateScale(120),
+    marginTop: moderateScale(160),
     borderColor: 'red',
     justifyContent: 'flex-end',
   },

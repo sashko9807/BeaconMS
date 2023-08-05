@@ -24,7 +24,7 @@ import { useForm } from 'react-hook-form';
 import globalStyles from '../../../globals/styles'
 
 import { ACTIONS, useApiResultReducer } from '../../../hooks/useApiResultReducer';
-import KeyboardAwareScrollViewWrapper from '../../../components/KeyboardAwareScrollView';
+import KeyboardAwareScrollViewWrapper from '../../../components/KeyboardAwareScrollViewWrapper';
 
 const AddBuildingScreen = ({ navigation }) => {
   const [addBuilding, { isLoading, isSuccess, isError }] =

@@ -9,7 +9,6 @@ import ControlledUserInput from '../../components/ControlledUserInput';
 import { useForm } from 'react-hook-form';
 import { useForgotPasswordMutation } from '../../api/userQueries';
 
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import globalStyles from '../../globals/styles'
 import { useApiResultReducer, ACTIONS } from '../../hooks/useApiResultReducer';
 

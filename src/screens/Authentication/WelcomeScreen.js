@@ -10,7 +10,7 @@ import ApiResultModal from '../../components/ApiResultModal'
 import ActivityIndicatorComponent from '../../components/ActivityIndicatorComponent';
 import { useApiResultReducer, ACTIONS } from '../../hooks/useApiResultReducer';
 import { moderateScale } from '../../utils/scaling';
-import KeyboardAwareScrollViewWrapper from '../../components/KeyboardAwareScrollView';
+import KeyboardAwareScrollViewWrapper from '../../components/KeyboardAwareScrollViewWrapper';
 
 const WelcomeScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
     btnContainer: {
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginTop: moderateScale(10),
+        marginTop: moderateScale(100),
     },
     buttons: {
         position: 'relative',
